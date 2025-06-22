@@ -16,7 +16,7 @@ function Room() {
     const promptPassword = !passwordFromURL;
     const password = promptPassword ? prompt("🔐 Enter the room password (if any):") || "" : passwordFromURL;
 
-    socketRef.current = io("http://localhost:5000");
+    socketRef.current = io("https://collaborative-notepad-w2ft.onrender.com");
 
     socketRef.current.emit("join-room", { roomId, password });
 
