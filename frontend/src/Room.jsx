@@ -16,9 +16,34 @@ function Room() {
     const promptPassword = !passwordFromURL;
     const password = promptPassword ? prompt("🔐 Enter the room password (if any):") || "" : passwordFromURL;
 
-    socketRef.current = io("https://collaborative-notepad-w2ft.onrender.com");
+const socketConnect = () => {
+  socketRef.current = io("https://collaborative-notepad-w2ft.onrender.com", {
+    transports: ["websocket"],
+    reconnectionAttempts: 5,
+    reconnectionDelay: 3000
+  });
 
+  socketRef.current.on("connect_error", () => {
+    console.log("Reconnecting to socket...");
+  });
+
+  socketRef.current.on("connect", () => {
+    console.log("✅ Socket connected!");
     socketRef.current.emit("join-room", { roomId, password });
+  });
+
+  socketRef.current.on("auth-failed", () => {
+    alert("❌ Incorrect password. Redirecting to homepage...");
+    window.location.href = "/";
+  });
+
+  socketRef.current.on("load-text", (data) => {
+    if (!isTyping.current) setText(data);
+  });
+};
+
+socketConnect(); // ✅ Call it
+
 
     const handleAuthFailed = () => {
       alert("❌ Incorrect password. Redirecting to homepage...");
