@@ -7,9 +7,12 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "https://collaborative-notepad-olive.vercel.app",
+    methods: ["GET", "POST"],
+    credentials: true
   },
 });
+
 
 const rooms = {};
 const roomTimers = {};
